@@ -34,8 +34,12 @@ export const PeopleTable = ({ people, selectedSlug }: Props) => {
 
       <tbody>
         {people.map(person => {
-          const mother = person.motherName ? byName.get(person.motherName) : undefined;
-          const father = person.fatherName ? byName.get(person.fatherName) : undefined;
+          const mother = person.motherName
+            ? byName.get(person.motherName)
+            : undefined;
+          const father = person.fatherName
+            ? byName.get(person.fatherName)
+            : undefined;
 
           return (
             <tr
@@ -57,7 +61,9 @@ export const PeopleTable = ({ people, selectedSlug }: Props) => {
                 {mother ? (
                   <PersonLink person={mother} />
                 ) : person.motherName ? (
-                  <span className={cn('has-text-danger')}>{person.motherName}</span>
+                  <span className={cn('has-text-danger')}>
+                    {person.motherName}
+                  </span>
                 ) : (
                   '-'
                 )}

@@ -1,31 +1,36 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import cn from 'classnames';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { getPeople } from '../api';
 import type { Person } from '../types/Person';
 import { Loader } from '../components/Loader';
 import { PeopleTable } from '../components/PeopleTable';
 
-type LoadStatus = 'idle' | 'loading' | 'success' | 'error';
+enum LoadStatus {
+  Idle = 'idle',
+  Loading = 'loading',
+  Success = 'success',
+  Error = 'error',
+}
 
-export const PeoplePage: React.FC = () => {
+export const PeoplePage = () => {
   const { slug } = useParams<{ slug: string }>();
   const [people, setPeople] = useState<Person[]>([]);
-  const [status, setStatus] = useState<LoadStatus>('idle');
+  const [status, setStatus] = useState<LoadStatus>(LoadStatus.Idle);
 
   useEffect(() => {
-    setStatus('loading');
+    setStatus(LoadStatus.Loading);
     getPeople()
       .then(data => {
         setPeople(data);
-        setStatus('success');
+        setStatus(LoadStatus.Success);
       })
-      .catch(() => setStatus('error'));
+      .catch(() => setStatus(LoadStatus.Error));
   }, []);
 
-  const isLoading = status === 'loading';
-  const isError = status === 'error';
-  const isEmpty = status === 'success' && people.length === 0;
+  const isLoading = status === LoadStatus.Loading;
+  const isError = status === LoadStatus.Error;
+  const isEmpty = status === LoadStatus.Success && people.length === 0;
 
   return (
     <>
@@ -36,16 +41,13 @@ export const PeoplePage: React.FC = () => {
           {isLoading && <Loader />}
 
           {isError && (
-            <p
-              data-cy="peopleLoadingError"
-              className={cn('has-text-danger')}
-            >
+            <p data-cy="peopleLoadingError" className={cn('has-text-danger')}>
               Something went wrong
             </p>
           )}
 
           {isEmpty && (
-            <p data-cy="noPeopleMessage" className={cn()}>
+            <p data-cy="noPeopleMessage">
               There are no people on the server
             </p>
           )}
